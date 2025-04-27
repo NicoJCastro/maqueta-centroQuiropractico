@@ -1,13 +1,89 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button'
+import { useNavigate } from 'react-router-dom'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../components/ui/dialog"
+import { Input } from "../components/ui/input"
+import { Label } from "../components/ui/label"
+import { Calendar } from "../components/ui/calendar"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select"
 
 export default function Appointments() {
+  const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false)
+  const [date, setDate] = useState(new Date())
+
   return (
     <div className="container mx-auto p-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
+        <Button variant="outline" onClick={() => navigate('/dashboard')}>
+          Volver
+        </Button>
         <h1 className="text-3xl font-bold">Citas</h1>
-        <Button>Nueva Cita</Button>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button>Nueva Cita</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Crear Nueva Cita</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="patient">Paciente</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar paciente" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="juan">Juan Pérez</SelectItem>
+                    <SelectItem value="maria">María González</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label>Fecha</Label>
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  className="rounded-md border"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="time">Hora</Label>
+                <Input id="time" type="time" />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="type">Tipo de Cita</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="consulta">Consulta General</SelectItem>
+                    <SelectItem value="seguimiento">Seguimiento</SelectItem>
+                    <SelectItem value="ajuste">Ajuste Cervical</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsOpen(false)}>
+                Cancelar
+              </Button>
+              <Button onClick={() => setIsOpen(false)}>
+                Crear Cita
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2">
